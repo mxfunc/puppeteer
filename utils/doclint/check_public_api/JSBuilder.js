@@ -120,6 +120,9 @@ function checkSources(sources) {
       return false;
     if (type.getCallSignatures().length)
       return false;
+    if (checker.typeToString(type) === 'boolean')
+      return false;
+
     return true;
   }
 
