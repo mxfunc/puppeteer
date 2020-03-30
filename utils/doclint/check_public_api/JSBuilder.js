@@ -98,7 +98,7 @@ function checkSources(sources) {
   function serializeSymbol(symbol, circular = []) {
     const type = checker.getTypeOfSymbolAtLocation(symbol, symbol.valueDeclaration);
     const name = symbol.getName();
-    if (symbol.valueDeclaration.dotDotDotToken) {
+    if (symbol.valueDeclaration && symbol.valueDeclaration.dotDotDotToken) {
       const innerType = serializeType(type.typeArguments[0], circular);
       innerType.name = '...' + innerType.name;
       return Documentation.Member.createProperty('...' + name, innerType);
@@ -120,8 +120,11 @@ function checkSources(sources) {
       return false;
     if (type.getCallSignatures().length)
       return false;
-    if (checker.typeToString(type) === 'boolean')
+    if (type.isLiteral())
       return false;
+    if (type.isUnion())
+      return false;
+
 
     return true;
   }
